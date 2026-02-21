@@ -6,11 +6,6 @@ public sealed class IdempotencyService(HybridCache cache, IdempotencyConfig conf
     private readonly IdempotencyConfig _config = config ?? throw new ArgumentNullException(nameof(config));
     private readonly TimeSpan _minLocalExpiration = TimeSpan.FromMinutes(5);
 
-    private static readonly JsonSerializerOptions JsonOpts = new()
-    {
-        PropertyNameCaseInsensitive = true,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    };
 
     private static readonly HybridCacheEntryOptions ReadOnlyOptions = new()
     {
@@ -28,58 +23,57 @@ public sealed class IdempotencyService(HybridCache cache, IdempotencyConfig conf
         ArgumentNullException.ThrowIfNull(operation);
 
         var cacheKey = BuildKey(key);
-        var cached = await ReadAsync(cacheKey, ct);
-
-        if (cached is not null)
+        var expiration = ttl ?? _config.Ttl;
+        
+        var opts = new HybridCacheEntryOptions
         {
-            var resolved = ResolveCached<T>(cached);
-            return resolved.IsFailed ? 
-                throw new IdempotencyException(resolved.Errors[0].Message, cached.Status) : 
-                resolved.Value;
-        }
+            Expiration = expiration,
+            LocalCacheExpiration = expiration < _minLocalExpiration ? expiration : _minLocalExpiration
+        };
 
-        var result = await operation(ct);
-
-        var serialized = Serialize(result);
-        if (serialized.IsFailed)
-            throw new InvalidOperationException(serialized.Errors[0].Message);
-
-        await PersistAsync(cacheKey, new CachedResult(Status: 200, Payload: serialized.Value), ttl ?? _config.Ttl, ct);
-
-        return result;
+        return await _cache.GetOrCreateAsync(
+            cacheKey,
+            async token =>
+            {
+                var result = await operation(token);
+                return new CachedModel<T>(200, result);
+            },
+            opts,
+            cancellationToken: ct).AsTask().ContinueWith(task =>
+            {
+                var cached = task.Result;
+                return cached.IsFailure
+                    ? throw new IdempotencyException(cached.Error ?? "Operação anterior falhou.", cached.Status)
+                    : cached.Payload!;
+            }, ct);
     }
 
-    public Task<CachedResult?> GetAsync(
+    public async Task<CachedResult?> GetAsync(
         string key, 
         CancellationToken ct = default) => 
-            ReadAsync(BuildKey(key), ct);
+            await _cache.GetOrCreateAsync(
+                BuildKey(key), _ => ValueTask.FromResult<CachedResult?>(null), ReadOnlyOptions, cancellationToken: ct).AsTask();
 
-    public Task RemoveAsync(
+    public async Task RemoveAsync(
         string key, 
         CancellationToken ct = default) => 
-            _cache.RemoveAsync(BuildKey(key), ct).AsTask();
+            await _cache.RemoveAsync(BuildKey(key), ct);
 
-    public Task CacheAsync(
+    public async Task CacheAsync(
         string key, 
-        string payload, 
+        ReadOnlyMemory<byte> payload, 
         int statusCode,
         TimeSpan? ttl = null, 
         CancellationToken ct = default) =>
-            PersistAsync(BuildKey(key), new CachedResult(statusCode, payload), ttl ?? _config.Ttl, ct);
+            await PersistAsync(BuildKey(key), new CachedResult(statusCode, payload.ToArray()), ttl ?? _config.Ttl, ct);
 
     private string BuildKey(string key) => 
         $"{_config.KeyPrefix}{key}";
 
-    private async Task<CachedResult?> ReadAsync(
-        string cacheKey, 
-        CancellationToken ct) => 
-            await _cache.GetOrCreateAsync<CachedResult?>(
-                cacheKey, _ => ValueTask.FromResult<CachedResult?>(null), ReadOnlyOptions, cancellationToken: ct);
-
-    private Task PersistAsync(
-        string key, 
-        CachedResult result, 
-        TimeSpan expiration, 
+    private async Task PersistAsync(
+        string key,
+        CachedResult result,
+        TimeSpan expiration,
         CancellationToken ct)
     {
         var opts = new HybridCacheEntryOptions
@@ -88,38 +82,6 @@ public sealed class IdempotencyService(HybridCache cache, IdempotencyConfig conf
             LocalCacheExpiration = expiration < _minLocalExpiration ? expiration : _minLocalExpiration
         };
 
-        return _cache.SetAsync(key, result, opts, cancellationToken: ct).AsTask();
-    }
-
-    private static Result<T> ResolveCached<T>(CachedResult cached) => 
-        cached.IsFailure ? 
-            Result.Fail<T>(cached.Error ?? "Operação anterior falhou.") : 
-            Deserialize<T>(cached.Payload!);
-
-    private static Result<string> Serialize<T>(T value)
-    {
-        try
-        {
-            return Result.Ok(JsonSerializer.Serialize(value, JsonOpts));
-        }
-        catch (JsonException ex)
-        {
-            return Result.Fail<string>($"Erro ao serializar payload: {ex.Message}");
-        }
-    }
-
-    private static Result<T> Deserialize<T>(string json)
-    {
-        try
-        {
-            var value = JsonSerializer.Deserialize<T>(json, JsonOpts);
-            return value is null
-                ? Result.Fail<T>("Payload desserializado é nulo.")
-                : Result.Ok(value);
-        }
-        catch (JsonException ex)
-        {
-            return Result.Fail<T>($"Erro ao desserializar payload: {ex.Message}");
-        }
+        await _cache.SetAsync(key, result, opts, cancellationToken: ct);
     }
 }

@@ -83,7 +83,7 @@ public sealed class IdempotencyIntegrationTests(AspireFixture fixture) : IClassF
         res1.StatusCode.Should().Be(HttpStatusCode.OK);
         res2.StatusCode.Should().Be(HttpStatusCode.OK);
         res1.Content!.Status.Should().Be("confirmed");
-        res1.Content!.Status.Should().Be("confirmed");
+        res2.Content!.Status.Should().Be("confirmed");
         res1.Content!.UpdatedAt.Should().Be(res2.Content!.UpdatedAt);
     }
 

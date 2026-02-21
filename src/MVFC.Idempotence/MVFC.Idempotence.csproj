@@ -20,9 +20,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="FluentResults" />
     <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
+    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" />
   </ItemGroup>
 	
   <ItemGroup>

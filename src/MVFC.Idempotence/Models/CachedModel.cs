@@ -1,8 +1,8 @@
-﻿namespace MVFC.Idempotence.Models;
+namespace MVFC.Idempotence.Models;
 
-public sealed record CachedResult(
+public sealed record CachedModel<T>(
     [property: JsonPropertyName("s")] int Status,
-    [property: JsonPropertyName("p")] byte[]? Payload = null,
+    [property: JsonPropertyName("p")] T? Payload = default,
     [property: JsonPropertyName("e")] string? Error = null)
 {
     [JsonPropertyName("t")]

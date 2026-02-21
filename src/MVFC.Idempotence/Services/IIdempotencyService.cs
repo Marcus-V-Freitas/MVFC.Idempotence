@@ -18,7 +18,7 @@ public interface IIdempotencyService
  
     Task CacheAsync(
         string key, 
-        string payload, 
+        ReadOnlyMemory<byte> payload, 
         int statusCode, 
         TimeSpan? ttl = null, 
         CancellationToken ct = default);
