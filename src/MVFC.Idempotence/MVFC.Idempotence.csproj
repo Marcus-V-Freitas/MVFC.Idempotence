@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<Nullable>enable</Nullable>
+	<Version>0.0.0</Version>
+	<Authors>Marcus Vinicius de Freitas Costa</Authors>
+	<RepositoryType>git</RepositoryType>
+	<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+	<IsPackable>true</IsPackable>
+	<PackageIcon>icon.png</PackageIcon>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<PackageProjectUrl>https://www.nuget.org/packages/MVFC.Idempotence</PackageProjectUrl>
+	<PackageTags>idempotency;api;aspnetcore;cache;middleware;rest;dotnet;webapi;redis</PackageTags>
+	<RepositoryUrl>https://github.com/Marcus-V-Freitas/MVFC.Idempotence</RepositoryUrl>
+	<Description>Middleware e serviços para idempotência em APIs ASP.NET Core, com suporte a cache distribuído e integração com Redis. Facilita a implementação de operações seguras e repetíveis, evitando duplicidade de requisições.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="FluentResults" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
+  </ItemGroup>
+	
+  <ItemGroup>
+	 <None Include="README.md" Pack="true" PackagePath="" />
+	 <None Include="icon.png" Pack="true" PackagePath="" />
+   </ItemGroup>
+
+   <ItemGroup>
+	 <FrameworkReference Include="Microsoft.AspNetCore.App" />
+   </ItemGroup>
+
+</Project>

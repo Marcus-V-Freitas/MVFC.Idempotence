@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/playground/">
+    <Project Path="playground/MVFC.Idempotence.Playground.Api/MVFC.Idempotence.Playground.Api.csproj" />
+    <Project Path="playground/MVFC.Idempotence.Playground.AppHost/MVFC.Idempotence.Playground.AppHost.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/MVFC.Idempotence/MVFC.Idempotence.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MVFC.Idempotence.Tests/MVFC.Idempotence.Tests.csproj"/>
+  </Folder>
+</Solution>

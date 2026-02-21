@@ -1,0 +1,11 @@
+﻿global using Aspire.Hosting;
+global using Aspire.Hosting.Testing;
+global using System.Net;
+global using MVFC.Idempotence.Playground.Api.Responses;
+global using MVFC.Idempotence.Tests.TestUtils;
+global using FluentAssertions;
+global using MVFC.Idempotence.Tests.Fixture;
+global using MVFC.Idempotence.Tests.Services;
+global using Refit;
+global using Xunit;
+global using MVFC.Idempotence.Playground.Api.Requests;
