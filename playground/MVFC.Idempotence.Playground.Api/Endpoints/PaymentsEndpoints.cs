@@ -6,12 +6,12 @@ public static class PaymentsEndpoints
     {
         app.MapPost("/api/payments", async (PaymentRequest req, CancellationToken ct) =>
         {
-            await Task.Delay(200, ct);
+            await Task.Delay(200, ct).ConfigureAwait(false);
 
-            if (req.Amount <= 0)
-                return Results.UnprocessableEntity(new { error = "Valor deve ser positivo." });
+            return req.Amount <= 0
+                ? Results.UnprocessableEntity(new { error = "Valor deve ser positivo." })
+                : Results.Ok(new PaymentResponse(Guid.NewGuid(), req.OrderId, req.Amount, DateTime.UtcNow));
 
-            return Results.Ok(new PaymentResponse(Guid.NewGuid(), req.OrderId, req.Amount, DateTime.UtcNow));
         }).WithIdempotency(
             ttl: TimeSpan.FromHours(48),
             options: new IdempotencyOptions { HeaderName = "X-Request-Id" });

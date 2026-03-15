@@ -2,26 +2,23 @@
 
 public sealed class AspireFixture : IAsyncLifetime
 {
-    private DistributedApplication _app = null!;
+    private ProjectAppHost _appHost = null!;
     private HttpClient _http = null!;
 
     internal IApiService Api = null!;
 
     public async ValueTask InitializeAsync()
     {
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.MVFC_Idempotence_Playground_AppHost>();
+        _appHost = new ProjectAppHost();
+        await _appHost.StartAsync().ConfigureAwait(false);
 
-        _app = await appHost.BuildAsync();
-        await _app.StartAsync();
-
-        _http = _app.CreateHttpClient("api");
+        _http = _appHost.CreateHttpClient("api");
         Api = RestService.For<IApiService>(_http);
     }
 
     public async ValueTask DisposeAsync()
     {
-        await _app.StopAsync();
-        await _app.DisposeAsync();
+        await _appHost.DisposeAsync().ConfigureAwait(false);
         _http.Dispose();
     }
 }

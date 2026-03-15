@@ -6,7 +6,7 @@ public static class IdempotencyEndpoints
     {
         app.MapDelete("/api/idempotency/{key}", async (string key, IIdempotencyService svc, CancellationToken ct) =>
         {
-            await svc.RemoveAsync(key, ct);
+            await svc.RemoveAsync(key, ct).ConfigureAwait(false);
             return Results.NoContent();
         });
     }

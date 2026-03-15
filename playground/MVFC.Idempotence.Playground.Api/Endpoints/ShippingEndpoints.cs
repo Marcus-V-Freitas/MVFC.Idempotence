@@ -12,14 +12,20 @@ public static class ShippingEndpoints
 
         shipping.MapPost("/dispatch", async (DispatchRequest req, CancellationToken ct) =>
         {
-            await Task.Delay(100, ct);
-            return Results.Ok(new ShippingResponse(Guid.NewGuid(), req.OrderId, "dispatched", DateTime.UtcNow));
+            await Task.Delay(100, ct).ConfigureAwait(false);
+
+            var response = new ShippingResponse(Guid.NewGuid(), req.OrderId, "dispatched", DateTime.UtcNow);
+
+            return Results.Ok(response);
         });
 
         shipping.MapPost("/cancel", async (CancelRequest req, CancellationToken ct) =>
         {
-            await Task.Delay(100, ct);
-            return Results.Ok(new ShippingResponse(Guid.NewGuid(), req.OrderId, "cancelled", DateTime.UtcNow));
+            await Task.Delay(100, ct).ConfigureAwait(false);
+
+            var response = new ShippingResponse(Guid.NewGuid(), req.OrderId, "cancelled", DateTime.UtcNow);
+
+            return Results.Ok(response);
         });
     }
 }

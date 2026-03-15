@@ -6,8 +6,7 @@ public sealed class IdempotencyService(HybridCache cache, IdempotencyConfig conf
     private readonly IdempotencyConfig _config = config ?? throw new ArgumentNullException(nameof(config));
     private readonly TimeSpan _minLocalExpiration = TimeSpan.FromMinutes(5);
 
-
-    private static readonly HybridCacheEntryOptions ReadOnlyOptions = new()
+    private static readonly HybridCacheEntryOptions _readOnlyOptions = new()
     {
         Flags = HybridCacheEntryFlags.DisableLocalCacheWrite
               | HybridCacheEntryFlags.DisableDistributedCacheWrite,
@@ -24,7 +23,7 @@ public sealed class IdempotencyService(HybridCache cache, IdempotencyConfig conf
 
         var cacheKey = BuildKey(key);
         var expiration = ttl ?? _config.Ttl;
-        
+
         var opts = new HybridCacheEntryOptions
         {
             Expiration = expiration,
@@ -45,29 +44,29 @@ public sealed class IdempotencyService(HybridCache cache, IdempotencyConfig conf
                 return cached.IsFailure
                     ? throw new IdempotencyException(cached.Error ?? "Operação anterior falhou.", cached.Status)
                     : cached.Payload!;
-            }, ct);
+            }, ct).ConfigureAwait(false);
     }
 
     public async Task<CachedResult?> GetAsync(
-        string key, 
-        CancellationToken ct = default) => 
+        string key,
+        CancellationToken ct = default) =>
             await _cache.GetOrCreateAsync(
-                BuildKey(key), _ => ValueTask.FromResult<CachedResult?>(null), ReadOnlyOptions, cancellationToken: ct).AsTask();
+                BuildKey(key), _ => ValueTask.FromResult<CachedResult?>(null), _readOnlyOptions, cancellationToken: ct).AsTask().ConfigureAwait(false);
 
     public async Task RemoveAsync(
-        string key, 
-        CancellationToken ct = default) => 
-            await _cache.RemoveAsync(BuildKey(key), ct);
+        string key,
+        CancellationToken ct = default) =>
+            await _cache.RemoveAsync(BuildKey(key), ct).ConfigureAwait(false);
 
     public async Task CacheAsync(
-        string key, 
-        ReadOnlyMemory<byte> payload, 
+        string key,
+        ReadOnlyMemory<byte> payload,
         int statusCode,
-        TimeSpan? ttl = null, 
+        TimeSpan? ttl = null,
         CancellationToken ct = default) =>
-            await PersistAsync(BuildKey(key), new CachedResult(statusCode, payload.ToArray()), ttl ?? _config.Ttl, ct);
+            await PersistAsync(BuildKey(key), new CachedResult(statusCode, payload.ToArray()), ttl ?? _config.Ttl, ct).ConfigureAwait(false);
 
-    private string BuildKey(string key) => 
+    private string BuildKey(string key) =>
         $"{_config.KeyPrefix}{key}";
 
     private async Task PersistAsync(
@@ -82,6 +81,6 @@ public sealed class IdempotencyService(HybridCache cache, IdempotencyConfig conf
             LocalCacheExpiration = expiration < _minLocalExpiration ? expiration : _minLocalExpiration
         };
 
-        await _cache.SetAsync(key, result, opts, cancellationToken: ct);
+        await _cache.SetAsync(key, result, opts, cancellationToken: ct).ConfigureAwait(false);
     }
 }

@@ -6,9 +6,11 @@ public static class InvoicesEndpoints
     {
         app.MapPost("/api/invoices", async (InvoiceRequest req, CancellationToken ct) =>
         {
-            await Task.Delay(50, ct);
-            return Results.Created($"/api/invoices/{req.ExternalId}",
-                new InvoiceResponse(req.ExternalId, req.Value, DateTime.UtcNow));
+            await Task.Delay(50, ct).ConfigureAwait(false);
+
+            var response = new InvoiceResponse(req.ExternalId, req.Value, DateTime.UtcNow);
+
+            return Results.Created($"/api/invoices/{req.ExternalId}", response);
         }).WithIdempotency(
             keyResolver: ctx => ctx.Request.Query["externalId"].FirstOrDefault(),
             ttl: TimeSpan.FromDays(7));

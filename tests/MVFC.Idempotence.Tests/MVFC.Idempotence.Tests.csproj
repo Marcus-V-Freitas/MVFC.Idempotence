@@ -1,10 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <NoWarn>$(NoWarn);CA2012</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,11 +17,13 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit.v3" />
     <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="NSubstitute" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\playground\MVFC.Idempotence.Playground.Api\MVFC.Idempotence.Playground.Api.csproj" />
     <ProjectReference Include="..\..\playground\MVFC.Idempotence.Playground.AppHost\MVFC.Idempotence.Playground.AppHost.csproj" />
+    <ProjectReference Include="..\..\src\MVFC.Idempotence\MVFC.Idempotence.csproj" />
   </ItemGroup>
 
 </Project>

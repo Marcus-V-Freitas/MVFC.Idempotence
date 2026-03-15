@@ -1,4 +1,4 @@
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 var redisConnection = builder.Configuration.GetConnectionString("idempotency-cache")!;
 
 builder.Services.AddIdempotencyRedis(redisConnection, cfg =>
@@ -12,4 +12,4 @@ var app = builder.Build();
 
 app.MapDefaultEndpoints();
 
-await app.RunAsync();
+await app.RunAsync().ConfigureAwait(false);

@@ -3,35 +3,35 @@
 internal interface IApiService
 {
     [Post("/api/orders")]
-    Task<ApiResponse<OrderCreatedResponse>> CreateOrderAsync(
+    public Task<ApiResponse<OrderCreatedResponse>> CreateOrderAsync(
         [HeaderCollection] IDictionary<string, string> headers, 
         [Body] CreateOrderRequest payload);
 
     [Put("/api/orders/{orderId}")]
-    Task<ApiResponse<OrderUpdatedResponse>> UpdateOrderAsync(
+    public Task<ApiResponse<OrderUpdatedResponse>> UpdateOrderAsync(
         Guid orderId,
         [Body] UpdateOrderRequest payload);
 
     [Post("/api/payments")]
-    Task<ApiResponse<PaymentResponse>> CreatePaymentAsync(
+    public Task<ApiResponse<PaymentResponse>> CreatePaymentAsync(
         [HeaderCollection] IDictionary<string, string> headers,
         [Body] PaymentRequest payload);
 
     [Post("/api/invoices")]
-    Task<ApiResponse<InvoiceResponse>> CreateInvoiceAsync(
+    public Task<ApiResponse<InvoiceResponse>> CreateInvoiceAsync(
         [AliasAs("externalId")] string externalId,
         [Body] InvoiceRequest payload);
 
     [Post("/api/shipping/dispatch")]
-    Task<ApiResponse<ShippingResponse>> DispatchShippingAsync(
+    public Task<ApiResponse<ShippingResponse>> DispatchShippingAsync(
         [HeaderCollection] IDictionary<string, string> headers,
         [Body] DispatchRequest payload);
 
     [Post("/api/shipping/cancel")]
-    Task<ApiResponse<ShippingResponse>> CancelShippingAsync(
+    public Task<ApiResponse<ShippingResponse>> CancelShippingAsync(
         [HeaderCollection] IDictionary<string, string> headers,
         [Body] CancelRequest payload);
 
     [Delete("/api/idempotency/{key}")]
-    Task<ApiResponse<string>> DeleteIdempotencyAsync(string key);
+    public Task<ApiResponse<string>> DeleteIdempotencyAsync(string key);
 }
