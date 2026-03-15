@@ -1,36 +1,60 @@
-# MVFC.Idempotence
+﻿# MVFC.Idempotence
 
-Uma biblioteca de idempotência leve e eficiente para Minimal APIs do ASP.NET Core, baseada em Redis.
+A lightweight and efficient idempotency library for ASP.NET Core Minimal APIs, powered by Redis.
 
-## Objetivo
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.Idempotence/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.Idempotence/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.Idempotence/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.Idempotence)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+![Platform](https://img.shields.io/badge/.NET-9%20%7C%2010-blue)
 
-O objetivo desta biblioteca é garantir que requisições idênticas sejam processadas apenas uma vez, evitando efeitos colaterais indesejados de retentativas ou envios duplicados. Ela fornece uma experiência simples, semelhante a atributos, para Minimal APIs usando filtros de endpoint.
-
----
-
-## Funcionalidades
-
-- **Baseado em Redis**: Armazenamento confiável para chaves de idempotência e respostas em cache.
-- **Configuração Fluente**: Configuração fácil dentro do builder do ASP.NET Core.
-- **Integração com Minimal API**: Projetada especificamente para o estilo moderno de `.MapPost`, `.MapPut`, etc.
-- **Resolução de Chave Flexível**: Resolva chaves de idempotência a partir de cabeçalhos (headers), valores de rota ou lógica personalizada.
-- **TTL Configurável**: Controle por quanto tempo os resultados em cache permanecem no Redis.
+[Portuguese README](README.pt-br.md)
 
 ---
 
-## Instalação
+## Overview
+
+`MVFC.Idempotence` ensures that identical HTTP requests are processed only once, preventing unwanted side effects from retries or duplicate submissions. It provides a simple, attribute-like experience for Minimal APIs using endpoint filters.
+
+In distributed systems, idempotency is critical. Whether dealing with payment processing, order creation, or any write operation, the same request should always produce the same result without executing the business logic more than once.
+
+| Package | Service | Downloads |
+|---|---|---|
+| [MVFC.Idempotence](src/MVFC.Idempotence/README.md) | Idempotency for Minimal APIs | ![Downloads](https://img.shields.io/nuget/dt/MVFC.Idempotence) |
+
+---
+
+## Features
+
+- **Redis-Based**: Reliable storage for idempotency keys and cached responses using StackExchange.Redis.
+- **Fluent Configuration**: Easy setup within the ASP.NET Core service builder.
+- **Minimal API Integration**: Natively designed for the modern `.MapPost`, `.MapPut`, etc. style.
+- **Flexible Key Resolution**: Resolve idempotency keys from headers, route values, or custom logic.
+- **Configurable TTL**: Control how long cached results remain in Redis.
+- **Group Support**: Apply idempotency to entire route groups at once.
+
+---
+
+## Installation
+
+Install via the .NET CLI:
 
 ```bash
 dotnet add package MVFC.Idempotence
 ```
 
+Or via the NuGet Package Manager:
+
+```bash
+Install-Package MVFC.Idempotence
+```
+
 ---
 
-## Configuração
+## Configuration
 
-### 1. Registrar Serviços
+### 1. Register Services
 
-No seu `Program.cs`, adicione os serviços de idempotência e aponte para sua string de conexão do Redis.
+In your `Program.cs`, register the idempotency services and point to your Redis connection string.
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
@@ -38,60 +62,60 @@ var redisConnection = builder.Configuration.GetConnectionString("redis")!;
 
 builder.Services.AddIdempotencyRedis(redisConnection, cfg =>
 {
-    cfg.Ttl = TimeSpan.FromHours(24); // TTL padrão para resultados em cache
-    cfg.HeaderName = "X-Idempotency-Key"; // Cabeçalho padrão para buscar as chaves
+    cfg.Ttl = TimeSpan.FromHours(24);       // Default TTL for cached results
+    cfg.HeaderName = "X-Idempotency-Key";   // Default header to look for the key
     cfg.AllowedMethods = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "POST", "PUT", "PATCH" };
 });
 ```
 
 ---
 
-## Exemplos de Uso
+## Usage Examples
 
-Você pode habilitar a idempotência em endpoints específicos usando os métodos de extensão `.WithIdempotency()`.
+Enable idempotency on specific endpoints using the `.WithIdempotency()` extension methods.
 
-### Uso Básico (Baseado em Header)
+### Basic Usage (Header-Based)
 
-Por padrão, a biblioteca procura a chave no `HeaderName` configurado (ex: `X-Idempotency-Key`).
+By default, the library looks for the key in the configured `HeaderName` (e.g., `X-Idempotency-Key`).
 
 ```csharp
 app.MapPost("/api/orders", async (CreateOrderRequest req) =>
 {
-    // Sua lógica aqui
+    // Your logic here
     return Results.Created($"/api/orders/{Guid.NewGuid()}", new { req.ProductId });
 }).WithIdempotency();
 ```
 
-### Idempotência Baseada em Rota
+### Route-Based Idempotency
 
-Se a sua chave de idempotência faz parte da URL (comum para operações `PUT`), você pode especificar o nome do parâmetro de rota.
+If your idempotency key is part of the URL (common for `PUT` operations), specify the route parameter name.
 
 ```csharp
 app.MapPut("/api/orders/{orderId:guid}", async (Guid orderId, UpdateOrderRequest req) =>
 {
-    // Este endpoint agora é idempotente baseado no valor da rota {orderId}
+    // This endpoint is now idempotent based on the {orderId} route value
     return Results.Ok(new { orderId, Status = "Updated" });
 }).WithIdempotency(fromRoute: "orderId");
 ```
 
-### Resolutor de Chave Customizado
+### Custom Key Resolver
 
-Para cenários mais complexos, você pode fornecer uma função personalizada para resolver a chave a partir do `HttpContext`.
+For more complex scenarios, provide a custom function to resolve the key from the `HttpContext`.
 
 ```csharp
-app.MapPost("/api/payments", async (PaymentRequest req) => 
+app.MapPost("/api/payments", async (PaymentRequest req) =>
 {
     return Results.Accepted();
-}).WithIdempotency(ctx => 
+}).WithIdempotency(ctx =>
 {
-    // Lógica customizada para obter a chave de qualquer lugar no contexto
+    // Custom logic to get the key from anywhere in the context
     return ctx.Request.Headers["Custom-Key"].FirstOrDefault();
 });
 ```
 
-### Uso em Grupos
+### Group-Level Usage
 
-A idempotência também pode ser aplicada a um grupo inteiro de endpoints. Isso é útil quando todos os endpoints em um determinado prefixo devem seguir a mesma regra de idempotência.
+Apply idempotency to an entire group of endpoints. Useful when all endpoints under a prefix should follow the same idempotency rule.
 
 ```csharp
 var orders = app.MapGroup("/api/orders").WithIdempotency();
@@ -100,9 +124,9 @@ orders.MapPost("/", CreateOrder);
 orders.MapPut("/{id}", UpdateOrder);
 ```
 
-### Sobrescrevendo Configurações por Endpoint
+### Per-Endpoint TTL Override
 
-Você também pode sobrescrever o TTL ou opções específicas para um único endpoint.
+Override the TTL or specific options for a single endpoint.
 
 ```csharp
 app.MapPost("/api/expensive-operation", () => Results.Ok())
@@ -111,35 +135,54 @@ app.MapPost("/api/expensive-operation", () => Results.Ok())
 
 ---
 
-## Parâmetros de Configuração
+## Configuration Parameters
 
-| Parâmetro        | Tipo           | Descrição                                                        |
-| :--------------- | :------------- | :--------------------------------------------------------------- |
-| `Ttl`            | `TimeSpan`     | Tempo que o resultado permanece cacheado no Redis.               |
-| `HeaderName`     | `string`       | O cabeçalho HTTP usado para identificar a chave de idempotência. |
-| `AllowedMethods` | `ISet<string>` | Os métodos HTTP permitidos para idempotência (ex: POST, PUT).    |
-
----
-
-## Integrações
-
-O `MVFC.Idempotence` foi construído para funcionar perfeitamente com:
-- **StackExchange.Redis**: O cliente subjacente para comunicação com Redis.
-- **ASP.NET Core Minimal APIs**: Suporte nativo para filtros de endpoint.
-- **Distributed Cache**: Utiliza abstrações padrão de cache onde possível.
+| Parameter        | Type           | Description                                                    |
+| :--------------- | :------------- | :------------------------------------------------------------- |
+| `Ttl`            | `TimeSpan`     | Duration the result remains cached in Redis.                   |
+| `HeaderName`     | `string`       | The HTTP header used to identify the idempotency key.          |
+| `AllowedMethods` | `ISet<string>` | HTTP methods allowed for idempotency (e.g., POST, PUT, PATCH). |
 
 ---
 
-## Estrutura do Projeto
+## How It Works
 
-Este repositório está organizado da seguinte forma:
-
-- **[src](src)**: Contém o código-fonte principal da biblioteca `MVFC.Idempotence`.
-- **[playground](playground)**: Ambiente de teste e demonstração (API de exemplo) para validar a implementação da idempotência.
-- **[tests](tests)**: Conjunto de testes para garantir a estabilidade e o comportamento esperado da biblioteca.
+1. An incoming request arrives at an idempotent endpoint.
+2. The library extracts the idempotency key (from header, route, or custom resolver).
+3. It checks Redis for a cached response using that key.
+4. **If a cached response exists**, it is returned immediately — business logic is **not** executed again.
+5. **If no cached response exists**, the request proceeds normally; the response is stored in Redis with the configured TTL.
 
 ---
 
-## Licença
+## Integrations
 
-Este projeto é licenciado sob a **Apache License 2.0**. Consulte o arquivo [LICENSE](LICENSE) para mais detalhes.
+`MVFC.Idempotence` is built to work seamlessly with:
+
+- **StackExchange.Redis**: The underlying client for Redis communication.
+- **ASP.NET Core Minimal APIs**: Native support for endpoint filters.
+- **Distributed Cache**: Uses standard cache abstractions where possible.
+
+---
+
+## Project Structure
+
+- **[src](src)**: Main library source code for `MVFC.Idempotence`.
+- **[playground](playground)**: Demo/test environment (sample API) for validating the implementation.
+- **[tests](tests)**: Test suite to ensure stability and expected behavior.
+
+---
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a history of changes and releases.
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+[Apache-2.0](LICENSE)
