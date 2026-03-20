@@ -1,4 +1,4 @@
-﻿# Contributing to MVFC.SQLCraft
+﻿# Contributing to MVFC.Idempotence
 
 ## Prerequisites
 
