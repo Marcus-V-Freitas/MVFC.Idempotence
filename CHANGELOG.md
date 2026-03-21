@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.3] - 2026-03-21
+
+### Changed
+- CI/CD workflow refinements for automated publishing and coverage reporting
+- Minor adjustments to Codecov configuration for status checks precision
+
 ## [1.1.2] - 2026-03-14
 
 ### Added
@@ -57,3 +63,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for distributed cache and Redis integration.
 - Configurable header names and allowed HTTP methods. (commit de75b7a)  
   https://github.com/Marcus-V-Freitas/MVFC.Idempotence/commit/de75b7ad853296230f81232c028e1215ba056805d
+
+[1.1.3]: https://github.com/Marcus-V-Freitas/MVFC.Idempotence/compare/v1.1.2...v1.1.3
+[1.1.2]: https://github.com/Marcus-V-Freitas/MVFC.Idempotence/compare/v1.1.1...v1.1.2
+[1.1.1]: https://github.com/Marcus-V-Freitas/MVFC.Idempotence/compare/v1.1.0...v1.1.1
+[1.1.0]: https://github.com/Marcus-V-Freitas/MVFC.Idempotence/compare/v1.0.1...v1.1.0
+[1.0.1]: https://github.com/Marcus-V-Freitas/MVFC.Idempotence/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/Marcus-V-Freitas/MVFC.Idempotence/releases/tag/v1.0.0
