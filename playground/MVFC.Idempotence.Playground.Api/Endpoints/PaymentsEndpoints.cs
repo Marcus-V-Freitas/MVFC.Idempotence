@@ -10,7 +10,7 @@ public static class PaymentsEndpoints
 
             return req.Amount <= 0
                 ? Results.UnprocessableEntity(new { error = "Valor deve ser positivo." })
-                : Results.Ok(new PaymentResponse(Guid.NewGuid(), req.OrderId, req.Amount, DateTime.UtcNow));
+                : Results.Ok(new PaymentResponse(Guid.NewGuid(), req.OrderId, req.Amount, DateTimeOffset.UtcNow));
 
         }).WithIdempotency(
             ttl: TimeSpan.FromHours(48),

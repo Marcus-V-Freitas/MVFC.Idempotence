@@ -21,7 +21,7 @@ public sealed class IdempotencyFilterTests
         {
             AllowedMethods = new HashSet<string> { "POST" }
         });
-       
+
         ValueTask<object?> Next(EndpointFilterInvocationContext _)
         {
             nextCalled = true;
@@ -79,7 +79,7 @@ public sealed class IdempotencyFilterTests
         // Arrange
         _sut.Request.Method = "POST";
 
-        var key = "test-key";        
+        var key = "test-key";
         var filter = new IdempotencyFilter(ctx => key);
         var cached = new CachedResult(200, [1, 2, 3]);
 
@@ -97,7 +97,7 @@ public sealed class IdempotencyFilterTests
     [Fact]
     public async Task InvokeAsync_WhenCachedFailure_ShouldReturnProblem()
     {
-        // Arrange        
+        // Arrange
         _sut.Request.Method = "POST";
 
         var key = "fail-key";
@@ -117,7 +117,7 @@ public sealed class IdempotencyFilterTests
     [Fact]
     public async Task InvokeAsync_WhenCachedWithNullPayload_ShouldReturnEmptyRawJson()
     {
-        // Arrange        
+        // Arrange
         _sut.Request.Method = "POST";
 
         var key = "null-payload";
@@ -141,7 +141,7 @@ public sealed class IdempotencyFilterTests
         // Arrange
         _sut.Request.Method = "POST";
 
-        var key = "cache-me";        
+        var key = "cache-me";
         var filter = new IdempotencyFilter(ctx => key);
 
         _service.GetAsync(key, Arg.Any<CancellationToken>())
@@ -168,13 +168,13 @@ public sealed class IdempotencyFilterTests
         // Arrange
         _sut.Request.Method = "POST";
 
-        var key = "dont-cache-me";        
+        var key = "dont-cache-me";
         var filter = new IdempotencyFilter(ctx => key);
         var result = Results.BadRequest();
 
         _service.GetAsync(key, Arg.Any<CancellationToken>())
                 .ReturnsNull();
-        
+
         ValueTask<object?> Next(EndpointFilterInvocationContext _) =>
             ValueTask.FromResult<object?>(result);
 
@@ -191,7 +191,7 @@ public sealed class IdempotencyFilterTests
         // Arrange
         _sut.Request.Method = "POST";
 
-        var key = "cache-error";        
+        var key = "cache-error";
         var filter = new IdempotencyFilter(ctx => key);
         var result = Results.Ok(new
         {
@@ -205,8 +205,8 @@ public sealed class IdempotencyFilterTests
                             Arg.Any<ReadOnlyMemory<byte>>(), Arg.Any<int>(),
                             Arg.Any<TimeSpan?>(),
                             Arg.Any<CancellationToken>())
-                .Returns(Task.FromException(new Exception("Cache failure")));
-        
+                .Returns(Task.FromException(new InvalidOperationException("Cache failure")));
+
         ValueTask<object?> Next(EndpointFilterInvocationContext _) =>
             ValueTask.FromResult<object?>(result);
 
@@ -224,7 +224,7 @@ public sealed class IdempotencyFilterTests
         // Arrange
         _sut.Request.Method = "POST";
 
-        var key = "state-test";        
+        var key = "state-test";
         var filter = new IdempotencyFilter(ctx => key);
 
         // First call to initialize state
@@ -240,7 +240,7 @@ public sealed class IdempotencyFilterTests
         // Arrange
         _sut.Request.Method = "POST";
 
-        var key = "non-iresult";       
+        var key = "non-iresult";
         var filter = new IdempotencyFilter(ctx => key);
         var result = new
         {
@@ -263,7 +263,7 @@ public sealed class IdempotencyFilterTests
         // Arrange
         _sut.Request.Method = "POST";
 
-        var key = "boundary-test";        
+        var key = "boundary-test";
         var filter = new IdempotencyFilter(ctx => key);
 
         // Test 299 (Should cache)

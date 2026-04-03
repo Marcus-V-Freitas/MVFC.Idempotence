@@ -1,4 +1,4 @@
-﻿# ============================================================
+# ============================================================
 #  MVFC – .editorconfig
 #  Melhores práticas C# / .NET 2026
 #  Baseado em: Microsoft Coding Conventions, Roslyn Analyzers,
@@ -399,6 +399,9 @@ dotnet_diagnostic.CA2007.severity = suggestion
 
 # Usar CancellationToken
 dotnet_diagnostic.CA2016.severity = warning
+
+# Usar ValueTasks corretamente
+dotnet_diagnostic.CA2012.severity = none
 
 # Não expor List<T> em API pública
 dotnet_diagnostic.CA1002.severity = suggestion

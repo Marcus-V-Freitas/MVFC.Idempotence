@@ -8,7 +8,7 @@ public static class InvoicesEndpoints
         {
             await Task.Delay(50, ct).ConfigureAwait(false);
 
-            var response = new InvoiceResponse(req.ExternalId, req.Value, DateTime.UtcNow);
+            var response = new InvoiceResponse(req.ExternalId, req.Value, DateTimeOffset.UtcNow);
 
             return Results.Created($"/api/invoices/{req.ExternalId}", response);
         }).WithIdempotency(

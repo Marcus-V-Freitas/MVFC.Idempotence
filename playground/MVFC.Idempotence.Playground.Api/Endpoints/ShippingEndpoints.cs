@@ -14,7 +14,7 @@ public static class ShippingEndpoints
         {
             await Task.Delay(100, ct).ConfigureAwait(false);
 
-            var response = new ShippingResponse(Guid.NewGuid(), req.OrderId, "dispatched", DateTime.UtcNow);
+            var response = new ShippingResponse(Guid.NewGuid(), req.OrderId, "dispatched", DateTimeOffset.UtcNow);
 
             return Results.Ok(response);
         });
@@ -23,7 +23,7 @@ public static class ShippingEndpoints
         {
             await Task.Delay(100, ct).ConfigureAwait(false);
 
-            var response = new ShippingResponse(Guid.NewGuid(), req.OrderId, "cancelled", DateTime.UtcNow);
+            var response = new ShippingResponse(Guid.NewGuid(), req.OrderId, "cancelled", DateTimeOffset.UtcNow);
 
             return Results.Ok(response);
         });
