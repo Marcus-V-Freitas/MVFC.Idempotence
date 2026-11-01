@@ -27,14 +27,14 @@ public sealed class IdempotencyService(HybridCache cache, IdempotencyConfig conf
         var opts = new HybridCacheEntryOptions
         {
             Expiration = expiration,
-            LocalCacheExpiration = expiration < _minLocalExpiration ? expiration : _minLocalExpiration
+            LocalCacheExpiration = expiration < _minLocalExpiration ? expiration : _minLocalExpiration,
         };
 
         return await _cache.GetOrCreateAsync(
             cacheKey,
             async token =>
             {
-                var result = await operation(token);
+                var result = await operation(token).ConfigureAwait(false);
                 return new CachedModel<T>(200, result);
             },
             opts,
@@ -78,7 +78,7 @@ public sealed class IdempotencyService(HybridCache cache, IdempotencyConfig conf
         var opts = new HybridCacheEntryOptions
         {
             Expiration = expiration,
-            LocalCacheExpiration = expiration < _minLocalExpiration ? expiration : _minLocalExpiration
+            LocalCacheExpiration = expiration < _minLocalExpiration ? expiration : _minLocalExpiration,
         };
 
         await _cache.SetAsync(key, result, opts, cancellationToken: ct).ConfigureAwait(false);

@@ -1,8 +1,8 @@
 ﻿Task("Default")
-    .IsDependentOn("Test-Coverage")
-    .Does(() =>
+   .IsDependentOn("Test-Coverage")
+   .Does(() =>
 {
-    Information("Build com Cake iniciado!");
+   Information("Build com Cake iniciado!");
 });
 
 Task("Clean")
@@ -45,14 +45,14 @@ Task("Test-Coverage")
     .Does(() =>
 {
     var testProject = "./tests/MVFC.Idempotence.Tests/MVFC.Idempotence.Tests.csproj";
-    var resultsDir  = "./coverage";
-    var reportDir   = "./CoverageReport";
+    var resultsDir = "./coverage";
+    var reportDir = "./CoverageReport";
     var coverageXml = $"{resultsDir}/coverage.cobertura.xml";
 
     Information("Limpando pasta de cobertura...");
     CleanDirectory(resultsDir);
 
-    var coverageToolExe    = "./tools/dotnet-coverage";
+    var coverageToolExe = "./tools/dotnet-coverage";
     var coverageToolExeWin = "./tools/dotnet-coverage.exe";
 
     if (!FileExists(coverageToolExe) && !FileExists(coverageToolExeWin))
@@ -71,7 +71,7 @@ Task("Test-Coverage")
     Information("Executando testes com cobertura (dotnet-coverage)...");
 
     // dotnet-coverage collect monitors child processes, which is essential for Aspire integration tests
-    var testArgs = $"test \"{testProject}\" --configuration Release --no-build --logger \"trx;LogFileName=test-results.trx\"";
+    var testArgs = $"test \"{testProject}\" --configuration Release --no-build";
     var collectArgs = $"collect --output-format cobertura --output \"{coverageXml}\" \"dotnet {testArgs}\"";
     var exitCode = StartProcess(coverageToolPath, collectArgs);
 
@@ -87,7 +87,7 @@ Task("Test-Coverage")
         throw new Exception("Nenhum arquivo de cobertura encontrado após os testes.");
     }
 
-    var reportGeneratorExe    = "./tools/reportgenerator";
+    var reportGeneratorExe = "./tools/reportgenerator";
     var reportGeneratorExeWin = "./tools/reportgenerator.exe";
 
     if (!FileExists(reportGeneratorExe) && !FileExists(reportGeneratorExeWin))
@@ -102,7 +102,7 @@ Task("Test-Coverage")
     }
 
     var reportArgs = string.Join(";", reports.Select(f => f.FullPath));
-    var rgPath     = FileExists(reportGeneratorExeWin) ? reportGeneratorExeWin : reportGeneratorExe;
+    var rgPath = FileExists(reportGeneratorExeWin) ? reportGeneratorExeWin : reportGeneratorExe;
 
     Information("Gerando relatório HTML...");
     var rgCode = StartProcess(rgPath, $"-reports:\"{reportArgs}\" -targetdir:\"{reportDir}\" -reporttypes:\"Html;Cobertura;MarkdownSummaryGithub\" -assemblyfilters:\"+MVFC.Idempotence*\" -classfilters:\"-*.Tests.*;-*.Playground.*\"");

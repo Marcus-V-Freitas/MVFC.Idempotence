@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2026-10-31
+
+### Added
+
+- Added `global.json` configuring `Microsoft.Testing.Platform` as the test runner.
+- Integrated `MVFC.Pack.Analyzers` in `Directory.Build.targets` to standardize code analysis across projects.
+
+### Changed
+
+- Replaced direct `SonarAnalyzer.CSharp` reference with `MVFC.Pack.Analyzers` package in central package management.
+- Configured `.editorconfig` diagnostic suppressions (`MA0048` and `RCS1194`).
+- Added `.ConfigureAwait(false)` in `IdempotencyService` operation callbacks.
+- Enabled `AspireUseCliBundle` in `MVFC.Idempotence.Playground.AppHost`.
+- Simplified test execution arguments in `build.cake`.
+
 ## [1.2.2] - 2026-10-31
 
 ### Changed
@@ -102,6 +117,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configurable header names and allowed HTTP methods. (commit de75b7a)  
   <https://github.com/Marcus-V-Freitas/MVFC.Idempotence/commit/de75b7ad853296230f81232c028e1215ba056805d>
 
+[1.2.3]: https://github.com/Marcus-V-Freitas/MVFC.Idempotence/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/Marcus-V-Freitas/MVFC.Idempotence/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/Marcus-V-Freitas/MVFC.Idempotence/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/Marcus-V-Freitas/MVFC.Idempotence/compare/v1.1.3...v1.2.0
