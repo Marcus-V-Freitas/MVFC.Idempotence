@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.5] - 2026-11-08
+
+### Added
+
+- Pinned .NET SDK version `10.0.100` with `latestFeature` roll-forward in `global.json`.
+- Added `dotnet-coverage` and `dotnet-reportgenerator-globaltool` as local dotnet tools in `.config/dotnet-tools.json`.
+
+### Changed
+
+- Updated `build.cake` to run `dotnet-coverage` and `reportgenerator` via `dotnet tool run` instead of local ad-hoc installations.
+- Overhauled GitHub Actions CI workflow with concurrency controls, .NET 9 & 10 SDK setup, tool restoration, and refined coverage publishing.
+- Updated `MVFC.Pack.Analyzers` package to version `4.0.2` and refined test project exclusion logic in `Directory.Build.targets`.
+- Updated CI/Codecov badge links in README documentation.
+
 ## [1.2.4] - 2026-10-31
 
 ### Changed
@@ -123,6 +137,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configurable header names and allowed HTTP methods. (commit de75b7a)  
   <https://github.com/Marcus-V-Freitas/MVFC.Idempotence/commit/de75b7ad853296230f81232c028e1215ba056805d>
 
+[1.2.5]: https://github.com/Marcus-V-Freitas/MVFC.Idempotence/compare/v1.2.4...v1.2.5
 [1.2.4]: https://github.com/Marcus-V-Freitas/MVFC.Idempotence/compare/v1.2.3...v1.2.4
 [1.2.3]: https://github.com/Marcus-V-Freitas/MVFC.Idempotence/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/Marcus-V-Freitas/MVFC.Idempotence/compare/v1.2.1...v1.2.2

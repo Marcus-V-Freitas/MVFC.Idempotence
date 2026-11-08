@@ -2,8 +2,8 @@
 
 Uma biblioteca de idempotência leve e eficiente para Minimal APIs do ASP.NET Core, baseada em Redis.
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.Idempotence/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.Idempotence/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.Idempotence/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.Idempotence)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.Idempotence/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.Idempotence/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.Idempotence/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.Idempotence)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 ![Platform](https://img.shields.io/badge/.NET-9%20%7C%2010-blue)
 ![NuGet Version](https://img.shields.io/nuget/v/MVFC.Idempotence)
@@ -19,8 +19,8 @@ Uma biblioteca de idempotência leve e eficiente para Minimal APIs do ASP.NET Co
 
 Em sistemas distribuídos, a idempotência é essencial. Seja em processamento de pagamentos, criação de pedidos ou qualquer operação de escrita, a mesma requisição deve sempre produzir o mesmo resultado sem executar a lógica de negócio mais de uma vez.
 
-| Pacote | Serviço | Downloads |
-|---|---|---|
+| Pacote                                             | Serviço                      | Downloads                                                      |
+| -------------------------------------------------- | ---------------------------- | -------------------------------------------------------------- |
 | [MVFC.Idempotence](src/MVFC.Idempotence/README.md) | Idempotency for Minimal APIs | ![Downloads](https://img.shields.io/nuget/dt/MVFC.Idempotence) |
 
 ---

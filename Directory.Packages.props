@@ -7,14 +7,14 @@
     <PackageVersion Include="MessagePack" Version="3.1.12" />
     <PackageVersion Include="Aspire.Hosting.Testing" Version="13.6.4" />
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.6.4" />
-    <PackageVersion Include="MVFC.Aspire.Helpers.Redis" Version="10.1.1" />
+    <PackageVersion Include="MVFC.Aspire.Helpers.Redis" Version="10.1.7" />
     <PackageVersion Include="coverlet.collector" Version="10.1.0" />
     <PackageVersion Include="FluentAssertions" Version="[7.0.0]" />
     <PackageVersion Include="Microsoft.IO.RecyclableMemoryStream" Version="4.0.1" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="4.0.1" />
     <PackageVersion Include="xunit.v3" Version="4.0.2" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
-    <PackageVersion Include="MVFC.Pack.Analyzers" Version="4.0.1" />
+    <PackageVersion Include="MVFC.Pack.Analyzers" Version="4.0.2" />
     <PackageVersion Include="refit" Version="[10.2.0]" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Hybrid" Version="10.11.0" />
     <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.14" />
