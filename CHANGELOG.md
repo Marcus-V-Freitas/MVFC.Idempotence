@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-11-12
+
+### Added
+
+- Added multi-targeting support for `net10.0` and `net11.0` in `MVFC.Idempotence`.
+- Added .NET 11 SDK setup in GitHub Actions CI/CD workflows (`ci.yml`).
+- Added framework-conditional package versioning for `Microsoft.Extensions.Caching.*` in `Directory.Packages.props`.
+
+### Changed
+
+- Migrated test and playground projects (`MVFC.Idempotence.Tests`, `MVFC.Idempotence.Playground.Api`, `MVFC.Idempotence.Playground.AppHost`) to target .NET 11 (`net11.0`).
+- Updated `global.json` to allow prerelease SDKs and configure `rollForward` to `latestMajor`.
+- Updated dependencies in `Directory.Packages.props`:
+  - `Aspire.Hosting.*` to `13.6.5`
+  - `MVFC.Aspire.Helpers.Redis` to `11.0.0`
+  - `xunit.v3` to `4.0.3`
+  - `Microsoft.NET.Test.Sdk` to `18.12.0`
+- Updated README badges and documentation to reflect .NET 11 support.
+
 ## [1.2.5] - 2026-11-08
 
 ### Added
@@ -137,6 +156,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configurable header names and allowed HTTP methods. (commit de75b7a)  
   <https://github.com/Marcus-V-Freitas/MVFC.Idempotence/commit/de75b7ad853296230f81232c028e1215ba056805d>
 
+[2.0.0]: https://github.com/Marcus-V-Freitas/MVFC.Idempotence/compare/v1.2.5...v2.0.0
 [1.2.5]: https://github.com/Marcus-V-Freitas/MVFC.Idempotence/compare/v1.2.4...v1.2.5
 [1.2.4]: https://github.com/Marcus-V-Freitas/MVFC.Idempotence/compare/v1.2.3...v1.2.4
 [1.2.3]: https://github.com/Marcus-V-Freitas/MVFC.Idempotence/compare/v1.2.2...v1.2.3
